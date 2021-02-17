@@ -7,9 +7,15 @@
           </Col>
           <Col span="21" order="3" style="text-align:right">
             <span style="padding-right:15px">
-              <label>消费人：</label>
+              <label>所有人：</label>
               <Select v-model="searchModel.type" style="width:150px;text-align:left">
                 <Option v-for="item in treeSelect" :value="item.value" :key="item.value">{{ item.label }}</Option>
+              </Select>
+            </span>
+            <span style="padding-right:15px">
+              <label>类型：</label>
+              <Select v-model="searchModel.srType" style="width:150px;text-align:left">
+                <Option v-for="item in treeSrSelect" :value="item.value" :key="item.value">{{ item.label }}</Option>
               </Select>
             </span>
             <span style="padding-right:15px">
@@ -32,7 +38,7 @@
         :title="title"
         :loading="loading"
         :footer-hide="true">
-         <edit v-if="modalStatus" v-on:asyncOK="asyncOK" v-on:asyncNO="asyncNO" :treeSelect="treeSelect" :modalData="modalData" />
+         <edit v-if="modalStatus" v-on:asyncOK="asyncOK" v-on:asyncNO="asyncNO" :treeSelect="treeSelect" :modalData="modalData" :treeSrSelect="treeSrSelect" />
       </Modal>
     </div>
 </template>
@@ -47,15 +53,15 @@ export default {
       modalStatus: false,
       loading: true,
       title:'新增',
-      modalData:"",
+      modalData:{},
       table_columns: [
-        {
-          title: '工资',
-          key: 'number'
-        },
         {
           title: '所有人',
           key: 'name'
+        },
+        {
+          title: '类型',
+          key: 'type'
         },
         {
           title: '工资时间',
@@ -63,6 +69,14 @@ export default {
           render: (h, params) => {
             return h('div', this.$moment(params.row.logicTime).format("YYYY-MM-DD"));
           }
+        },
+        {
+          title: '金额',
+          key: 'number'
+        },
+        {
+          title: '备注',
+          key: 'remark'
         },
         {
           title: '登记时间',
@@ -80,7 +94,7 @@ export default {
             let modal=this.searchModel
             return h('div', [
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
 		            on: {
 		                click: (e) => {
                       _this.$Modal.confirm({
@@ -102,7 +116,7 @@ export default {
 		            }
 		          }, '删除'),
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
                 on: {
 		                click: (e) => {
                         getWagesInfoById(params.row.id).then(res=>{
@@ -119,6 +133,7 @@ export default {
       table_data: [],
       searchModel: {
         type: '',
+        srType: '',
         startTime: '',
         endTime: '',
         soryBy:'create_time',
@@ -126,7 +141,8 @@ export default {
         pageIndex: '1',
         pageSize: '10'
       },
-      treeSelect:[]
+      treeSelect:[],
+      treeSrSelect:[]
     }
   },
   components: {
@@ -168,12 +184,22 @@ export default {
       this.modalStatus = false;
     },
     add(){
+      this.modalData = {}
       this.modalStatus = true;
     },
     getSonDicByParentId(){
       getSonDicByParentId("9e99aff2-27ee-4e91-a245-9e5c650a4911").then(res=>{
         if(res.code==200){
           this.treeSelect=res.data
+        }
+      }).catch(err=>{
+
+      })
+    },
+    getSrDicByParentId(){
+      getSonDicByParentId("500e927d-8a84-4671-87ec-0635d116c9f7").then(res=>{
+        if(res.code==200){
+          this.treeSrSelect=res.data
         }
       }).catch(err=>{
 
@@ -196,6 +222,7 @@ export default {
   mounted () {
     this.getPageList(this.searchModel)
     this.getSonDicByParentId()
+    this.getSrDicByParentId()
   }
 }
 </script>

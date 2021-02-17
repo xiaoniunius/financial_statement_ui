@@ -11,7 +11,6 @@ import 'view-design/dist/styles/iview.css';
 Vue.prototype.$moment = moment;
 Vue.use(VueRouter);
 Vue.use(ViewUI);
-
 Vue.config.productionTip = false
 // 路由配置
 const RouterConfig = {

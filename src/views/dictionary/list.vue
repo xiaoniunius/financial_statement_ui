@@ -27,16 +27,17 @@
         :title="modalTitle"
         :loading="loading"
         :footer-hide="true">
-        <edit v-if="modalStatus" v-on:asyncOK="asyncOK" v-on:asyncNO="asyncNO" :parentId="treeSelectId" :sort="sort" />
+        <edit v-if="modalStatus" v-on:asyncOK="asyncOK" v-on:asyncNO="asyncNO" :parentId="treeSelectId" :sort="sort" :id="id" />
       </Modal>
     </div>
 </template>
 <script>
 import edit from '@/components/dictionary/edit'
-import { getDicTree, getDetailById, getPageList, deletes, add, getDicSort } from '@/api/dictionary'
+import { getDicTree, getDetailById, getPageList, deletes, add, getDicSort, update } from '@/api/dictionary'
 export default {
   data () {
     return {
+      id: '',
       total: 1,
       modalStatus: false,
       loading: true,
@@ -47,7 +48,9 @@ export default {
         pageIndex: '1',
         pageSize: '10',
         parentId:'',
-        name:''
+        name:'',
+        soryBy: 'sort',
+        sort :'asc'
       },
       treeData:[],
       table_columns: [
@@ -75,7 +78,7 @@ export default {
             let modal=this.searchModel
             return h('div', [
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
 		            on: {
 		                click: (e) => {
                       _this.$Modal.confirm({
@@ -98,10 +101,12 @@ export default {
 		            }
 		          }, '删除'),
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
                 on: {
 		                click: (e) => {
-		                    alert('修改')
+                      _this.modalTitle='修改'
+		                  this.id=params.row.id
+                      _this.modalStatus=true
 		                }
 		            }
 		          }, '修改')
@@ -126,20 +131,33 @@ export default {
     asyncOK (data) {
       let modal=this.searchModel
       let _this=this;
-      add(data).then(res=>{
-        if(res.code==200){
-          _this.$Message.info(res.message)
-          _this.modalStatus = false
-          _this.getPageList(modal)
-          _this.getDicTree()
-        }
-      })
+      if(data.id==null||data.id==''){
+        add(data).then(res=>{
+          if(res.code==200){
+            _this.$Message.info(res.message)
+            _this.modalStatus = false
+            _this.getPageList(modal)
+            _this.getDicTree()
+          }
+        })
+      }
+      else{
+        update(data).then(res=>{
+          if(res.code==200){
+            _this.$Message.info(res.message)
+            _this.modalStatus = false
+            _this.getPageList(modal)
+            _this.getDicTree()
+          }
+        })
+      }
     },
     asyncNO () {
       this.modalStatus = false;
     },
     add(){
       let _this=this
+      this.id=""
       if(this.treeSelectId!=null&&this.treeSelectId!=''){
         getDicSort().then(res=>{
           if(res.code==200){

@@ -16,6 +16,7 @@
     </Form>
 </template>
 <script>
+import { getDetailById } from "@/api/dictionary"
 export default {
   data () {
     return {
@@ -23,11 +24,12 @@ export default {
         name: '',
         sort:'',
         remark: '',
-        parentId:''
+        parentId:'',
+        id: ''
       }
     }
   },
-  props:["parentId","sort"],
+  props:["parentId","sort","id"],
   methods:{
       cancle(){
         this.$emit('asyncNO')
@@ -40,7 +42,19 @@ export default {
       }
   },
   mounted(){
-    this.formItem.sort=this.sort
+    if(this.id!=null&&this.id!=""){
+      getDetailById(this.id).then(res=>{
+        let data=res.data
+        this.formItem.id=data.id
+        this.formItem.name=data.name
+        this.formItem.sort=data.sort
+        this.formItem.remark=data.remark
+        this.formItem.parentId=data.parentId
+      })
+    }
+    else{
+      this.formItem.sort=this.sort
+    }
   }
 }
 </script>

@@ -12,7 +12,7 @@ const routers = [
     name: 'wages',
     meta: {
       icon: 'md-funnel',
-      title: '工资管理'
+      title: '收入管理'
     },
     component: Main,
     children: [
@@ -21,7 +21,7 @@ const routers = [
         name: 'list',
         meta: {
           icon: 'md-funnel',
-          title: '工资列表'
+          title: '收入列表'
         },
         component: () => import('@/views/wages/list.vue')
       }
@@ -32,7 +32,7 @@ const routers = [
     name: 'detail',
     meta: {
       icon: 'md-funnel',
-      title: '消费管理'
+      title: '支出管理'
     },
     component: Main,
     children: [
@@ -41,7 +41,7 @@ const routers = [
         name: 'list',
         meta: {
           icon: 'md-funnel',
-          title: '消费列表'
+          title: '支出列表'
         },
         component: () => import('@/views/detail/list.vue')
       }
@@ -78,49 +78,69 @@ const routers = [
     component: Main,
     children: [
       {
-        path: 'total',
-        name: 'total',
-        meta: {
-          icon: 'md-funnel',
-          title: '年度统计'
-        },
-        component: () => import('@/views/analysis/total.vue')
-      },
-      {
         path: 'oneself-year',
         name: 'oneself-year',
         meta: {
           icon: 'md-funnel',
-          title: '个人年度统计'
+          title: '年度统计'
         },
         component: () => import('@/views/analysis/oneself-year.vue')
-      },
-      {
-        path: 'month-analysis',
-        name: 'month-analysis',
-        meta: {
-          icon: 'md-funnel',
-          title: '月度统计'
-        },
-        component: () => import('@/views/analysis/month-analysis.vue')
       },
       {
         path: 'oneself-month',
         name: 'oneself-month',
         meta: {
           icon: 'md-funnel',
-          title: '个人月度统计'
+          title: '月度统计'
         },
         component: () => import('@/views/analysis/oneself-month.vue')
-      },
+      }
+    ]
+  },
+  {
+    path: '/analysis-chart',
+    name: 'analysis-chart',
+    meta: {
+      icon: 'md-funnel',
+      title: '报表分析'
+    },
+    component: Main,
+    children: [
       {
-        path: 'chart',
-        name: 'chart',
+        path: 'month-pay',
+        name: 'month-pay',
         meta: {
           icon: 'md-funnel',
-          title: '图表分析'
+          title: '月度支出对比'
         },
-        component: () => import('@/views/analysis/chart.vue')
+        component: () => import('@/views/analys-chart/month-pay.vue')
+      },
+      {
+        path: 'year-pay',
+        name: 'year-pay',
+        meta: {
+          icon: 'md-funnel',
+          title: '年度支出对比'
+        },
+        component: () => import('@/views/analys-chart/year-pay.vue')
+      },
+      {
+        path: 'month-income-pay',
+        name: 'month-income-pay',
+        meta: {
+          icon: 'md-funnel',
+          title: '月度收支对比'
+        },
+        component: () => import('@/views/analys-chart/month-income-pay.vue')
+      },
+      {
+        path: 'year-income-pay',
+        name: 'year-income-pay',
+        meta: {
+          icon: 'md-funnel',
+          title: '年度收支对比'
+        },
+        component: () => import('@/views/analys-chart/year-income-pay.vue')
       }
     ]
   }

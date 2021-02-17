@@ -13,9 +13,9 @@ export function deletes(id) {
     method: "GET",//请求方式 支持多种方式  get post put delete 等等
   });
 }
-export function edit(data) {
+export function update(data) {
   return axios({
-    url: "/dictionary/getDicTree",//这个地址是去掉公共地址和私有域名之后剩下的地址
+    url: "/dictionary/update",//这个地址是去掉公共地址和私有域名之后剩下的地址
     method: "POST",//请求方式 支持多种方式  get post put delete 等等
     data
   });

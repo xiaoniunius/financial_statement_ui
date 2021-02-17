@@ -53,7 +53,7 @@ export default {
       modalStatus: false,
       loading: true,
       title:'新增',
-      modalData:"",
+      modalData:{},
       table_columns: [
         {
           title: '消费',
@@ -94,7 +94,7 @@ export default {
             let modal=this.searchModel
             return h('div', [
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
 		            on: {
 		                click: (e) => {
                       _this.$Modal.confirm({
@@ -116,7 +116,7 @@ export default {
 		            }
 		          }, '删除'),
               h('label', {
-		            style: {marginRight: '15px'},
+		            style: {marginRight: '15px',cursor: 'pointer'},
                 on: {
 		                click: (e) => {
 		                    getDetailInfoById(params.row.id).then(res=>{
@@ -183,6 +183,7 @@ export default {
       this.modalStatus = false;
     },
     add(){
+      this.modalData = {}
       this.modalStatus = true;
     },
     getSonDicByParentId(){

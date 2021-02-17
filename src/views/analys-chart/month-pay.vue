@@ -20,117 +20,37 @@
         </Col>
       </Row>
     </div>
-    <Tabs class="tabs" value="name1">
-      <TabPane label="列表" name="name1" class="tabs-item">
-        <Table :columns="table_columns" :data="table_data"></Table>
-      </TabPane>
-      <TabPane label="图表" name="name2" class="tabs-item">
-        <div style="width: 100%; height: 700px" ref="chart"></div>
-      </TabPane>
-    </Tabs>
+    <div>
+      <Row>
+        <Col span="12">
+          <div style="width: 100%; height: 700px" ref="chartBar"></div>
+        </Col>
+        <Col span="12">
+          <div style="width: 100%; height: 700px" ref="chartPie"></div>
+        </Col>
+      </Row>
+    </div>
+
   </div>
 </template>
 <script>
 import echarts from 'echarts'
-import {getYearPageList} from '@/api/analysis-api'
 import {getSonDicByParentId} from '@/api/dictionary'
-import {getYearTotal} from '@/api/analysis-chart'
+import {getMonthPayBar} from '@/api/analysis-chart'
 
 export default {
   data() {
     return {
-      total: 1,
-      table_columns: [
-        {
-          title: '年份',
-          key: 'year'
-        },
-        {
-          title: '消费人',
-          key: 'personName'
-        },
-        {
-          title: '生活',
-          key: 'sh'
-        },
-        {
-          title: '交通',
-          key: 'jt'
-        },
-        {
-          title: '购物',
-          key: 'gw'
-        },
-        {
-          title: '车贷',
-          key: 'cd'
-        },
-        {
-          title: '通讯',
-          key: 'tx'
-        },
-        {
-          title: '休闲',
-          key: 'xx'
-        },
-        {
-          title: '水电',
-          key: 'sd'
-        },
-        {
-          title: '房租',
-          key: 'fz'
-        },
-        {
-          title: '转账',
-          key: 'zz'
-        },
-        {
-          title: '医药',
-          key: 'yy'
-        },
-        {
-          title: '红包',
-          key: 'hb'
-        },
-        {
-          title: '其他',
-          key: 'other'
-        },
-        {
-          title: '合计',
-          key: 'total'
-        }
-      ],
-      table_data: [],
       searchModel: {
         person: '',
-        year: '',
-        soryBy: 'year',
-        sort: 'asc',
-        pageIndex: '1',
-        pageSize: '10'
+        year: ''
       },
-      treeSelect: ''
+      treeSelect: '',
+      chartBar: '',
+      chartPie: ''
     }
   },
   methods: {
-    pageChange(pageIndex) {
-      this.searchModel.pageIndex = pageIndex;
-      this.getYearPageList(this.searchModel);
-    },
-    getYearPageList(modal, isSearch) {
-      getYearPageList(modal).then(res => {
-        if (res.code == 200) {
-          this.table_data = res.data
-        }
-        if (isSearch) {
-          this.$nextTick(function () {
-            this.$refs['pages'].currentPage = 1;
-          })
-        }
-      })
-    },
     search() {
       if (this.searchModel.year == null || this.searchModel.year == '') {
         this.$Message.warning('请选择消费时间');
@@ -140,8 +60,8 @@ export default {
         this.$Message.warning('请选择消费人');
         return;
       }
-      this.getYearPageList(this.searchModel, true)
-      this.loadChart(true)
+      this.loadChartBar(true)
+      this.loadChartPie(true)
     },
     getSonDicByParentId() {
       getSonDicByParentId("9e99aff2-27ee-4e91-a245-9e5c650a4911").then(res => {
@@ -155,14 +75,14 @@ export default {
     change(data) {
       this.searchModel.year = data
     },
-    init(e) {
+    initBar(e) {
       //2.初始化
-      this.chart = echarts.init(this.$refs.chart);
-      this.loadChart(e)
+      this.chartBar = echarts.init(this.$refs.chartBar);
+      this.loadChartBar(e)
     },
-    loadChart(e) {
+    loadChartBar(e) {
       let _this = this
-      getYearTotal(this.searchModel).then(res => {
+      getMonthPayBar(this.searchModel).then(res => {
         if (res.code == 200) {
           let data = res.data
           let x_data = []
@@ -176,7 +96,10 @@ export default {
             title: {
               text: this.chartTitle,
             },
-            xAxis: {type: 'category', data: x_data}, //X轴
+            xAxis: {
+              type: 'category',
+              data: x_data
+            }, //X轴
             yAxis: {type: 'value'}, //Y轴
             series: [
               {
@@ -194,12 +117,67 @@ export default {
           };
           if (e) {
             // 4.传入数据
-            _this.chart.setOption(option, e);
+            _this.chartBar.setOption(option, e);
           } else {
             // 4.传入数据
-            _this.chart.setOption(option);
+            _this.chartBar.setOption(option);
           }
-
+        }
+      })
+    },
+    initPie(e) {
+      //2.初始化
+      this.chartPie = echarts.init(this.$refs.chartPie);
+      this.loadChartPie(e)
+    },
+    loadChartPie(e) {
+      let _this = this
+      getMonthPayBar(this.searchModel).then(res => {
+        if (res.code == 200) {
+          let option = {
+            tooltip: {
+              trigger: 'item'
+            },
+            legend: {
+              top: '5%',
+              left: 'center'
+            },
+            series: [
+              {
+                name: '支出',
+                type: 'pie',
+                radius: ['40%', '70%'],
+                avoidLabelOverlap: false,
+                itemStyle: {
+                  borderRadius: 10,
+                  borderColor: '#fff',
+                  borderWidth: 2
+                },
+                label: {
+                  show: false,
+                  position: 'center'
+                },
+                emphasis: {
+                  label: {
+                    show: true,
+                    fontSize: '40',
+                    fontWeight: 'bold'
+                  }
+                },
+                labelLine: {
+                  show: false
+                },
+                data: res.data
+              }
+            ]
+          };
+          if (e) {
+            // 4.传入数据
+            _this.chartPie.setOption(option, e);
+          } else {
+            // 4.传入数据
+            _this.chartPie.setOption(option);
+          }
         }
       })
     }
@@ -208,8 +186,8 @@ export default {
     this.searchModel.person = 'efd5c1ba-d233-42bb-be80-80a2f9b111c7'
     this.searchModel.year = new Date().getFullYear()
     this.getSonDicByParentId()
-    this.getYearPageList(this.searchModel, true)
-    this.init(false)
+    this.initBar(false)
+    this.initPie(false)
   }
 }
 </script>
