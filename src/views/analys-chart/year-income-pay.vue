@@ -72,8 +72,22 @@ export default {
       this.searchModel.endYear = data
     },
     initBar(e) {
+      let _this = this
       //2.初始化
       this.chartBar = echarts.init(this.$refs.chartBar);
+      this.chartBar.on('click', function (params) {
+        if (params.seriesName == '收入') {
+          _this.$router.push({
+            path: "/wages/list",
+            query: {year: parseInt(params.name), person: _this.searchModel.person}
+          })
+        } else if (params.seriesName == '支出') {
+          _this.$router.push({
+            path: "/detail/list",
+            query: {year: parseInt(params.name), person: _this.searchModel.person}
+          })
+        }
+      });
       this.loadChartBar(e)
     },
     loadChartBar(e) {
@@ -88,7 +102,7 @@ export default {
           if (data[0].barChartVos != null && data[0].barChartVos.length > 0) {
             data[0].barChartVos.forEach((item) => {
               pay.push(item.value)
-              if(!_this.existsArray(item.name,name)){
+              if (!_this.existsArray(item.name, name)) {
                 name.push(item.name)
               }
             })
@@ -96,7 +110,7 @@ export default {
           if (data[1].barChartVos != null && data[1].barChartVos.length > 0) {
             data[1].barChartVos.forEach((item) => {
               income.push(item.value)
-              if(!_this.existsArray(item.name,name)){
+              if (!_this.existsArray(item.name, name)) {
                 name.push(item.name)
               }
             })

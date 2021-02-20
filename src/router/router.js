@@ -8,6 +8,26 @@ const routers = [
     component: () => import('@/views/index.vue')
   },
   {
+    path: '/budget',
+    name: 'budget',
+    meta: {
+      icon: 'md-funnel',
+      title: '预算管理'
+    },
+    component: Main,
+    children: [
+      {
+        path: 'list',
+        name: 'list',
+        meta: {
+          icon: 'md-funnel',
+          title: '预算列表'
+        },
+        component: () => import('@/views/budget/list.vue')
+      }
+    ]
+  },
+  {
     path: '/wages',
     name: 'wages',
     meta: {

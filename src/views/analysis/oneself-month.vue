@@ -109,11 +109,12 @@ export default {
         year: ''
       },
       treeSelect: '',
-      chartTitle: 'xxx月消费分布'
+      chartTitle: ''
     }
   },
   methods: {
     search() {
+      this.chartTitle = this.$moment(this.searchModel.year).format("YYYY年MM月") + '消费分布';
       if (this.searchModel.year == null || this.searchModel.year == '') {
         this.$Message.warning('请选择消费时间');
         return;
@@ -195,6 +196,7 @@ export default {
   mounted() {
     this.searchModel.person = 'efd5c1ba-d233-42bb-be80-80a2f9b111c7'
     this.searchModel.year = this.$moment(new Date().getFullYear() + "-" + ((new Date().getMonth() + 1) > 9 ? (new Date().getMonth() + 1) : '0' + (new Date().getMonth() + 1))).format("YYYY-MM");
+    this.chartTitle = this.$moment(this.searchModel.year).format("YYYY年MM月") + '消费分布';
     this.getSonDicByParentId()
     this.getOneselfMonthPageList(this.searchModel)
     this.init(false)

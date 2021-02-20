@@ -83,8 +83,15 @@ export default {
       this.searchModel.endYear = data
     },
     initBar(e) {
+      let _this = this
       //2.初始化
       this.chartBar = echarts.init(this.$refs.chartBar);
+      this.chartBar.on('click', function (params) {
+        _this.$router.push({
+          path: "/analysis-chart/month-pay",
+          query: {year: parseInt(params.name), person: _this.searchModel.person}
+        })
+      });
       this.loadChartBar(e)
     },
     loadChartBar(e) {

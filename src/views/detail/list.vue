@@ -2,10 +2,14 @@
     <div>
       <div class="search">
         <Row>
-          <Col span="3" order="4">
-            <Button type="primary" @click="add">新增</Button>
+          <Col span="6" order="4">
+            <Button type="primary" @click="add" style="float: left;margin-right: 5px">导出模板</Button>
+            <Upload style="float: left;margin-right: 5px" action="http://localhost:8010/file/upload" :on-success="uploadSuccess" :show-upload-list="false">
+              <Button type="primary">导入</Button>
+            </Upload>
+<!--            <Button type="primary" @click="add">新增</Button>-->
           </Col>
-          <Col span="21" order="3" style="text-align:right">
+          <Col span="18" order="3" style="text-align:right">
            <span style="padding-right:15px">
             <label>消费类型：</label>
             <Select v-model="searchModel.type" style="width:150px;text-align:left">
@@ -214,6 +218,16 @@ export default {
               })
             }
       })
+    },
+    uploadSuccess(response){
+      console.log(response)
+      if (response.code==200){
+        this.$Message.info(response.message)
+        this.getPageList(this.searchModel)
+      }
+      if (response.code==500){
+        this.$Message.error(response.message)
+      }
     }
   },
   mounted () {
@@ -222,3 +236,8 @@ export default {
   }
 }
 </script>
+<style scoped>
+.search{
+  margin-bottom: 10px;
+}
+</style>
